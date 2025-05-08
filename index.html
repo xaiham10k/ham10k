@@ -41,7 +41,7 @@
 </head>
 <body>
 
-<h1>CNN visualisations <a href="tab.html">[switch to tabular]</a></h1>
+<h1>CNN visualisations <a href="html.html">[switch to tabular]</a></h1>
 
 <div class="controls">
   <div class="toggle-switch">
@@ -104,27 +104,77 @@
 </div>
 
 <script>
-let DATA = [];
-
-fetch('xai_img.json')
-  .then(res => res.json())
-  .then(json => {
-    DATA = json;
-
-    // Populate dropdown
-    DATA.forEach(d => {
-      const o = document.createElement('option');
-      o.value = o.textContent = d.image_id;
-      imageSelect.appendChild(o);
-    });
-
-    imageSelect.value = DATA[0]?.image_id || '';
-    updateImages(); updateOpacity(); updateOverlayVis();
-  })
-  .catch(err => {
-    console.error('Failed to load data.json:', err);
-    desc.textContent = 'Error loading image data.';
-  });
+const DATA = [
+  {
+    "image_id": "ISIC_0025804",
+    "true_label": "bkl",
+    "effnet_pred": "nv",
+    "effnet_conf": 0.9232652187347412,
+    "resnet_pred": "nv",
+    "resnet_conf": 0.8516896963119507,
+    "images": {
+      "raw": "ISIC_0025804_raw.png",
+      "effnet_gradcam": "ISIC_0025804_effnet_gradcam.png",
+      "effnet_ig": "ISIC_0025804_effnet_ig.png",
+      "effnet_lime": "ISIC_0025804_effnet_lime.png",
+      "resnet_gradcam": "ISIC_0025804_resnet_gradcam.png",
+      "resnet_ig": "ISIC_0025804_resnet_ig.png",
+      "resnet_lime": "ISIC_0025804_resnet_lime.png"
+    }
+  },
+  {
+    "image_id": "ISIC_0028999",
+    "text_box": "test",
+    "true_label": "nv",
+    "effnet_pred": "nv",
+    "effnet_conf": 0.8908219933509827,
+    "resnet_pred": "mel",
+    "resnet_conf": 0.7814395427703857,
+    "images": {
+      "raw": "ISIC_0028999_raw.png",
+      "effnet_gradcam": "ISIC_0028999_effnet_gradcam.png",
+      "effnet_ig": "ISIC_0028999_effnet_ig.png",
+      "effnet_lime": "ISIC_0028999_effnet_lime.png",
+      "resnet_gradcam": "ISIC_0028999_resnet_gradcam.png",
+      "resnet_ig": "ISIC_0028999_resnet_ig.png",
+      "resnet_lime": "ISIC_0028999_resnet_lime.png"
+    }
+  },
+  {
+    "image_id": "ISIC_0024511",
+    "true_label": "akiec",
+    "effnet_pred": "bkl",
+    "effnet_conf": 0.39998504519462585,
+    "resnet_pred": "bcc",
+    "resnet_conf": 0.3424336612224579,
+    "images": {
+      "raw": "ISIC_0024511_raw.png",
+      "effnet_gradcam": "ISIC_0024511_effnet_gradcam.png",
+      "effnet_ig": "ISIC_0024511_effnet_ig.png",
+      "effnet_lime": "ISIC_0024511_effnet_lime.png",
+      "resnet_gradcam": "ISIC_0024511_resnet_gradcam.png",
+      "resnet_ig": "ISIC_0024511_resnet_ig.png",
+      "resnet_lime": "ISIC_0024511_resnet_lime.png"
+    }
+  },
+  {
+    "image_id": "ISIC_0030606",
+    "true_label": "vasc",
+    "effnet_pred": "vasc",
+    "effnet_conf": 0.9177793860435486,
+    "resnet_pred": "vasc",
+    "resnet_conf": 0.9452589750289917,
+    "images": {
+      "raw": "ISIC_0030606_raw.png",
+      "effnet_gradcam": "ISIC_0030606_effnet_gradcam.png",
+      "effnet_ig": "ISIC_0030606_effnet_ig.png",
+      "effnet_lime": "ISIC_0030606_effnet_lime.png",
+      "resnet_gradcam": "ISIC_0030606_resnet_gradcam.png",
+      "resnet_ig": "ISIC_0030606_resnet_ig.png",
+      "resnet_lime": "ISIC_0030606_resnet_lime.png"
+    }
+  }
+];
 
 
 const imageSelect = document.getElementById('imageSelect');
