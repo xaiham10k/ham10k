@@ -41,7 +41,7 @@
 </head>
 <body>
 
-<h1>CNN visualisations <a href="html.html">[switch to tabular]</a></h1>
+<h1>CNN visualisations <a href="tab.html">[switch to tabular]</a></h1>
 
 <div class="controls">
   <div class="toggle-switch">
@@ -106,7 +106,7 @@
 <script>
 let DATA = [];
 
-fetch('./web/data.json')
+fetch('./web/xai_picks.json')
   .then(res => res.json())
   .then(json => {
     DATA = json;
