@@ -11,11 +11,10 @@
       padding: 2em;
     }
 
-#app-container {
-  max-width: 700px;
-  width: 100%;
-}
-
+    #app-container {
+      max-width: 700px;
+      width: 100%;
+    }
 
     .controls {
       max-width: 600px;
@@ -80,7 +79,7 @@
 </head>
 <body>
   <div id="app-container">
-    <h1>Tabular counter-factual <a href="index2.html">[switch to CNN]</a></h1>
+    <h1>Tabular counter-factual <a href="index.html">[switch to CNN]</a></h1>
 
     <!-- TOP CONTROLS -->
     <div class="controls">
@@ -115,19 +114,238 @@
   </div>
 
   <script>
- let data = {};
-
-fetch('predictions_xgboost.json')
-  .then(res => res.json())
-  .then(json => {
-    data = json;
-    init();
-  })
-  .catch(err => {
-    console.error('Error loading data.json:', err);
-    document.getElementById("app-container").innerHTML = "<p>Failed to load data.</p>";
-  });
-
+    const DATA = [
+      {
+    "ISIC_0032121": {
+        "true class": "nv",
+        "true sex": "male",
+        "45.0": {
+            "predicted class": "nv",
+            "predicted prob": 74.61,
+            "top 3 predictions": [
+                "nv: 74.61",
+                "vasc: 13.6",
+                "bkl: 5.47"
+            ],
+            "opposite sex": {
+                "predicted class": "nv",
+                "predicted prob": 82.25,
+                "top 3 predictions": [
+                    "nv: 82.25",
+                    "vasc: 8.38",
+                    "bkl: 4.7"
+                ]
+            }
+        },
+        "10": {
+            "predicted class": "vasc",
+            "predicted prob": 78.83,
+            "top 3 predictions": [
+                "vasc: 78.83",
+                "nv: 20.01",
+                "mel: 0.5"
+            ],
+            "opposite sex": {
+                "predicted class": "nv",
+                "predicted prob": 87.16,
+                "top 3 predictions": [
+                    "nv: 87.16",
+                    "vasc: 11.04",
+                    "mel: 0.86"
+                ]
+            }
+        },
+        "40": {
+            "predicted class": "nv",
+            "predicted prob": 81.49,
+            "top 3 predictions": [
+                "nv: 81.49",
+                "vasc: 7.48",
+                "bkl: 5.79"
+            ],
+            "opposite sex": {
+                "predicted class": "nv",
+                "predicted prob": 84.77,
+                "top 3 predictions": [
+                    "nv: 84.77",
+                    "bkl: 4.86",
+                    "mel: 3.72"
+                ]
+            }
+        },
+        "80": {
+            "predicted class": "bkl",
+            "predicted prob": 58.36,
+            "top 3 predictions": [
+                "bkl: 58.36",
+                "nv: 18.77",
+                "mel: 13.79"
+            ],
+            "opposite sex": {
+                "predicted class": "bkl",
+                "predicted prob": 69.02,
+                "top 3 predictions": [
+                    "bkl: 69.02",
+                    "nv: 12.79",
+                    "mel: 12.49"
+                ]
+            }
+        }
+    },
+    "ISIC_0029719": {
+        "true class": "nv",
+        "true sex": "female",
+        "45.0": {
+            "predicted class": "nv",
+            "predicted prob": 56.89,
+            "top 3 predictions": [
+                "nv: 56.89",
+                "mel: 12.5",
+                "bcc: 11.99"
+            ],
+            "opposite sex": {
+                "predicted class": "nv",
+                "predicted prob": 40.46,
+                "top 3 predictions": [
+                    "nv: 40.46",
+                    "mel: 26.48",
+                    "bcc: 9.73"
+                ]
+            }
+        },
+        "10": {
+            "predicted class": "vasc",
+            "predicted prob": 83.04,
+            "top 3 predictions": [
+                "vasc: 83.04",
+                "nv: 13.8",
+                "bkl: 2.24"
+            ],
+            "opposite sex": {
+                "predicted class": "vasc",
+                "predicted prob": 78.68,
+                "top 3 predictions": [
+                    "vasc: 78.68",
+                    "nv: 13.92",
+                    "mel: 6.43"
+                ]
+            }
+        },
+        "40": {
+            "predicted class": "nv",
+            "predicted prob": 44.8,
+            "top 3 predictions": [
+                "nv: 44.8",
+                "bcc: 33.12",
+                "mel: 11.84"
+            ],
+            "opposite sex": {
+                "predicted class": "nv",
+                "predicted prob": 40.34,
+                "top 3 predictions": [
+                    "nv: 40.34",
+                    "bcc: 34.59",
+                    "mel: 11.83"
+                ]
+            }
+        },
+        "80": {
+            "predicted class": "bkl",
+            "predicted prob": 32.31,
+            "top 3 predictions": [
+                "bkl: 32.31",
+                "mel: 26.64",
+                "bcc: 26.58"
+            ],
+            "opposite sex": {
+                "predicted class": "bcc",
+                "predicted prob": 48.42,
+                "top 3 predictions": [
+                    "bcc: 48.42",
+                    "bkl: 22.64",
+                    "mel: 13.71"
+                ]
+            }
+        }
+    },
+    "ISIC_0032179": {
+        "true class": "bkl",
+        "true sex": "male",
+        "65.0": {
+            "predicted class": "akiec",
+            "predicted prob": 26.52,
+            "top 3 predictions": [
+                "akiec: 26.52",
+                "df: 20.05",
+                "mel: 17.07"
+            ],
+            "opposite sex": {
+                "predicted class": "bcc",
+                "predicted prob": 27.87,
+                "top 3 predictions": [
+                    "bcc: 27.87",
+                    "bkl: 20.08",
+                    "akiec: 16.83"
+                ]
+            }
+        },
+        "10": {
+            "predicted class": "nv",
+            "predicted prob": 69.94,
+            "top 3 predictions": [
+                "nv: 69.94",
+                "vasc: 25.73",
+                "df: 2.52"
+            ],
+            "opposite sex": {
+                "predicted class": "nv",
+                "predicted prob": 73.48,
+                "top 3 predictions": [
+                    "nv: 73.48",
+                    "vasc: 22.67",
+                    "df: 1.75"
+                ]
+            }
+        },
+        "40": {
+            "predicted class": "nv",
+            "predicted prob": 53.06,
+            "top 3 predictions": [
+                "nv: 53.06",
+                "mel: 15.63",
+                "df: 10.24"
+            ],
+            "opposite sex": {
+                "predicted class": "nv",
+                "predicted prob": 45.02,
+                "top 3 predictions": [
+                    "nv: 45.02",
+                    "mel: 37.0",
+                    "bkl: 6.63"
+                ]
+            }
+        },
+        "80": {
+            "predicted class": "akiec",
+            "predicted prob": 31.3,
+            "top 3 predictions": [
+                "akiec: 31.3",
+                "mel: 25.7",
+                "bkl: 15.28"
+            ],
+            "opposite sex": {
+                "predicted class": "akiec",
+                "predicted prob": 39.77,
+                "top 3 predictions": [
+                    "akiec: 39.77",
+                    "mel: 18.84",
+                    "bcc: 18.6"
+                ]
+            }
+        }
+    }
+}
+    ];
 
     const $ = id => document.getElementById(id);
     const DOM = {
@@ -147,7 +365,7 @@ fetch('predictions_xgboost.json')
     let currentAges = [];
 
     function populateImageDropdown() {
-      Object.keys(data).forEach(id => {
+      Object.keys(DATA[0]).forEach(id => {
         const opt = document.createElement("option");
         opt.value = opt.textContent = id;
         DOM.imageSelect.appendChild(opt);
@@ -156,7 +374,7 @@ fetch('predictions_xgboost.json')
 
     function populateAgeSlider() {
       const imgKey = DOM.imageSelect.value;
-      currentAges = Object.keys(data[imgKey])
+      currentAges = Object.keys(DATA[0][imgKey])
         .filter(k => !isNaN(parseFloat(k)))
         .sort((a, b) => parseFloat(a) - parseFloat(b));
 
@@ -190,29 +408,29 @@ fetch('predictions_xgboost.json')
       DOM.ageValue.textContent = ageKey;
 
       const pred = DOM.toggleSex.checked
-        ? data[imgKey][ageKey]["opposite sex"]
-        : data[imgKey][ageKey];
+        ? DATA[0][imgKey][ageKey]["opposite sex"]
+        : DATA[0][imgKey][ageKey];
 
-      DOM.trueClass.textContent = data[imgKey]["true class"];
-      DOM.trueSex.textContent  = data[imgKey]["true sex"];
+      DOM.trueClass.textContent = DATA[0][imgKey]["true class"];
+      DOM.trueSex.textContent  = DATA[0][imgKey]["true sex"];
 
       DOM.predictedClass.textContent = pred["predicted class"];
-      DOM.predictedClass.className  = (pred["predicted class"] === data[imgKey]["true class"])
+      DOM.predictedClass.className  = (pred["predicted class"] === DATA[0][imgKey]["true class"])
         ? "match" : "mismatch";
 
       DOM.predictedProb.textContent = pred["predicted prob"].toFixed(2);
 
       DOM.top3.innerHTML = "";
-      pred["top 3 predictions"].forEach((p,i) => {
+      pred["top 3 predictions"].forEach((p, i) => {
         const li = document.createElement("li");
-        li.textContent = `${i+1}. ${p}`;
+        li.textContent = `${i + 1}. ${p}`;
         DOM.top3.appendChild(li);
       });
     }
 
     function init() {
       populateImageDropdown();
-      DOM.imageSelect.value = Object.keys(data)[0];
+      DOM.imageSelect.value = Object.keys(DATA[0])[0];
       populateAgeSlider();
       updateImageDisplay();
 
@@ -228,3 +446,5 @@ fetch('predictions_xgboost.json')
   </script>
 </body>
 </html>
+
+
