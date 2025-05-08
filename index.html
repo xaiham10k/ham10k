@@ -107,7 +107,7 @@
 const DATA = [
   {
     "image_id": "ISIC_0025804",
-    "text_box": "Both ResNet-34 and EfficientNet-B0 misclassify the lesion as nevus with high confidence. <b>ResNet-34</b> focuses internally on the lesion (Grad-CAM, IG), but LIME shows reliance on background areas, suggesting the model may be influenced by skin context and artifacts like hair. <b>EfficientNet-B0</b> shows stronger alignment across all methods, with most attributions centered on the lesion itself, indicating a more focused, content-based decision.",
+    "text_box": "Both ResNet-34 and EfficientNet-B0 misclassify the lesion as nevus with high confidence. ResNet-34 focuses internally on the lesion (Grad-CAM, IG), but LIME shows reliance on background areas, suggesting the model may be influenced by skin context and artifacts like hair. EfficientNet-B0 shows stronger alignment across all methods, with most attributions centered on the lesion itself, indicating a more focused, content-based decision.",
     "true_label": "bkl",
     "effnet_pred": "nv",
     "effnet_conf": 0.9232652187347412,
@@ -125,7 +125,7 @@ const DATA = [
   },
   {
     "image_id": "ISIC_0028999",
-    "text_box": "test",
+    "text_box": "ResNet-34 misclassifies the lesion as melanoma (0.78 confidence), while EfficientNet-B0 correctly predicts nevus (0.89 confidence). ResNet-34 shows strong internal focus (Grad-CAM, IG), but LIME reveals some influence from background areas, suggesting sensitivity to context and visual ambiguity. EfficientNet-B0 focuses tightly on the lesion center across all methods, with mostly internal attributions, though LIME and IG show minor attention to surrounding skin.",
     "true_label": "nv",
     "effnet_pred": "nv",
     "effnet_conf": 0.8908219933509827,
@@ -143,6 +143,7 @@ const DATA = [
   },
   {
     "image_id": "ISIC_0024511",
+    "text_box": "Both models misclassify the lesion with low confidence (true label: actinic keratosis). ResNet-34 shows strong lesion-focused attention (Grad-CAM, IG), but LIME emphasizes background areas, indicating external context influences local decisions. EfficientNet-B0 pays less attention to the lesion, with Grad-CAM and LIME highlighting areas around it, suggesting reliance on background features."
     "true_label": "akiec",
     "effnet_pred": "bkl",
     "effnet_conf": 0.39998504519462585,
@@ -160,6 +161,7 @@ const DATA = [
   },
   {
     "image_id": "ISIC_0030606",
+    "text_box": "Both ResNet-34 and EfficientNet-B0 correctly classify the vascular lesion with high confidence (0.95 / 0.92). All explanation methods consistently highlight the central lesion, indicating focus on clinically meaningful features."
     "true_label": "vasc",
     "effnet_pred": "vasc",
     "effnet_conf": 0.9177793860435486,
