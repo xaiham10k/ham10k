@@ -125,7 +125,7 @@ const DATA = [
   },
   {
     "image_id": "ISIC_0028999",
-    "text_box": "ResNet-34 misclassifies the lesion as melanoma (0.78 confidence), while EfficientNet-B0 correctly predicts nevus (0.89 confidence). ResNet-34 shows strong internal focus (Grad-CAM, IG), but LIME reveals some influence from background areas, suggesting sensitivity to context and visual ambiguity. EfficientNet-B0 focuses tightly on the lesion center across except all but LIME, which is mostly attending to surrounding skin.",
+    "text_box": "ResNet-34 misclassifies the lesion as melanoma (0.78 confidence), while EfficientNet-B0 correctly predicts nevus (0.89 confidence). ResNet-34 shows strong internal focus (Grad-CAM, IG), but LIME reveals some influence from background areas, suggesting sensitivity to context and visual ambiguity. EfficientNet-B0 focuses tightly on the lesion center in all methods except LIME, which mostly attends to the surrounding skin.",
     "true_label": "nv",
     "effnet_pred": "nv",
     "effnet_conf": 0.8908219933509827,
