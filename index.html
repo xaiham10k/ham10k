@@ -143,7 +143,7 @@ const DATA = [
   },
   {
     "image_id": "ISIC_0024511",
-    "text_box": "Both models misclassify the lesion with low confidence (true label: actinic keratosis). ResNet-34 shows strong lesion-focused attention (Grad-CAM, IG), but LIME emphasizes background areas, indicating external context influences local decisions. EfficientNet-B0 pays less attention to the lesion, with Grad-CAM and LIME highlighting areas around it and LIME also predicting against with the lesion, suggesting reliance on background features.",
+    "text_box": "Both models misclassify the lesion with low confidence (true label: actinic keratosis). ResNet-34 shows strong lesion-focused attention (Grad-CAM, IG), but LIME emphasizes background areas, indicating external context influences local decisions. EfficientNet-B0 pays less attention to the lesion, with Grad-CAM and LIME both highlighting surrounding areas, and LIME further attributing negative evidence to the lesion itself, suggesting a reliance on background features..",
     "true_label": "akiec",
     "effnet_pred": "bkl",
     "effnet_conf": 0.39998504519462585,
