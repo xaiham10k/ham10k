@@ -1,284 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ISIC_0028999 Visualizations</title>
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<title>ISIC visualisations</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  body{font-family:sans-serif;padding:20px;text-align:center}
 
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      text-align: center;
-    }
+  .controls{margin-bottom:30px}
+  .toggle-switch{display:inline-flex;align-items:center;gap:10px;font-weight:700}
 
-    .controls {
-      margin-bottom: 30px;
-    }
+  .switch{position:relative;width:50px;height:26px}
+  .switch input{opacity:0;width:0;height:0}
+  .slider{position:absolute;inset:0;border-radius:26px;background:#2196f3;cursor:pointer;transition:.3s}
+  .slider::before{content:"";position:absolute;left:3px;bottom:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.3s}
+  .switch input:checked + .slider::before{transform:translateX(24px)}
 
-    .toggle-switch {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: bold;
-    }
+  .slider-label{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px;margin-top:10px}
+  .slider-control{display:flex;align-items:center;gap:8px}
+  #opacityValue{display:inline-block;width:48px;text-align:right}
+  #imageSelect{margin-top:10px;font-size:1rem}
 
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 26px;
-    }
+  .container{max-width:900px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
+  .image-row{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;width:100%}
+  .image-block{width:200px}
+  .overlay-container{position:relative;width:100%}
 
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+  .overlay-container img{display:block;width:100%;height:auto;border:1px solid #ccc}
+  .overlay{
+    position:absolute;inset:0;
+    width:100%;height:100%;
+    object-fit:contain;
+    transition:opacity .2s ease;
+    pointer-events:none;
+  }
 
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #2196F3;
-      transition: 0.3s;
-      border-radius: 26px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 20px;
-      width: 20px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: 0.3s;
-      border-radius: 50%;
-    }
-
-    .switch input:checked + .slider {
-      background-color: #2196F3;
-    }
-
-    .switch input:checked + .slider:before {
-      transform: translateX(24px);
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      width: 100%;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .image-row,
-    .description-box {
-      width: 100%;
-    }
-
-    .image-row {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .image-block {
-      width: 200px;
-    }
-
-    .overlay-container {
-      position: relative;
-      width: 100%;
-    }
-
-    .overlay-container img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border: 1px solid #ccc;
-      border-radius: 0;
-    }
-
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: opacity 0.2s ease;
-    }
-
-    .caption {
-      margin-top: 5px;
-      font-size: 0.9em;
-      color: #555;
-    }
-
-    .description-box {
-      text-align: left;
-      padding: 15px;
-      border: 1px solid #ccc;
-      background-color: #f9f9f9;
-    }
-
-    .slider-label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-
-    .slider-control {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-.slider-control {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  min-width: 200px; /* ADD THIS */
-  flex-wrap: nowrap; /* PREVENT WRAPPING */
-}
-
-    #opacityValue {
-      display: inline-block;
-      width: 50px;
-      text-align: right;
-    }
-
-    .checkbox-control {
-      display: flex;
-      align-items: center;
-      height: 100%;
-    }
-  </style>
+  .caption{margin-top:4px;font-size:.9em;color:#555}
+  .description-box{text-align:left;padding:15px;border:1px solid #ccc;background:#f9f9f9;width:100%}
+</style>
 </head>
 <body>
-  <h1>ISIC_0028999 Visualizations</h1>
 
-  <div class="controls">
-    <div class="toggle-switch">
-      <span>ResNet</span>
-      <label class="switch">
-        <input type="checkbox" id="modelToggle">
-        <span class="slider"></span>
-      </label>
-      <span>EfficientNet</span>
+<h1>CNN visualisations <a href="html.html">[switch to tabular]</a></h1>
+
+<div class="controls">
+  <div class="toggle-switch">
+    <span>ResNet</span>
+    <label class="switch">
+      <input type="checkbox" id="modelToggle">
+      <span class="slider"></span>
+    </label>
+    <span>EfficientNet</span>
+  </div>
+
+  <div class="slider-label">
+    <div class="slider-control">
+      Opacity: <span id="opacityValue">100%</span>
+      <input type="range" id="opacitySlider" min="0" max="100" value="100">
     </div>
+    <label><input type="checkbox" id="overlayToggle" checked> Show overlays</label>
+  </div>
 
-    <div class="slider-label">
-      <div class="slider-control">
-        <label>
-          Opacity:<span id="opacityValue">100%</span>
-        </label>
-        <input type="range" id="opacitySlider" min="0" max="100" value="100">
-      </div>
+  <div>
+    <label for="imageSelect">Select image:</label>
+    <select id="imageSelect"></select>
+  </div>
+</div>
 
-      <div class="checkbox-control">
-        <label>
-          <input type="checkbox" id="overlayToggle" checked>
-          Show Overlays
-        </label>
+<div class="container">
+  <div id="predictionSummary" style="font-weight:bold; margin-bottom:10px;"></div>
+
+  <div class="image-row">
+    <div class="image-block">
+      <div class="overlay-container">
+        <img id="rawImage" alt="raw">
       </div>
+      <div class="caption">Raw (reference)</div>
+    </div>
+    <div class="image-block">
+      <div class="overlay-container">
+        <img class="base" id="gcBase" alt="">
+        <img class="overlay" id="gradcam" alt="grad-cam">
+      </div>
+      <div class="caption">Grad-CAM</div>
+    </div>
+    <div class="image-block">
+      <div class="overlay-container">
+        <img class="base" id="igBase" alt="">
+        <img class="overlay" id="ig" alt="integrated-gradients">
+      </div>
+      <div class="caption">Integrated Gradients</div>
+    </div>
+    <div class="image-block">
+      <div class="overlay-container">
+        <img class="base" id="limeBase" alt="">
+        <img class="overlay" id="lime" alt="lime">
+      </div>
+      <div class="caption">LIME</div>
     </div>
   </div>
 
-  <div class="container">
-    <div class="image-row">
-      <!-- Static Raw Image -->
-      <div class="image-block">
-        <div class="overlay-container">
-          <img src="ISIC_0028999_resnet_raw.png" alt="Raw Image" id="rawImage">
-        </div>
-        <div class="caption">Raw (Reference)</div>
-      </div>
+  <div class="description-box" id="desc"></div>
+</div>
 
-      <!-- Grad-CAM -->
-      <div class="image-block">
-        <div class="overlay-container">
-          <img src="ISIC_0028999_resnet_raw.png" alt="Raw Image">
-          <img class="overlay" id="gradcam" alt="Grad-CAM">
-        </div>
-        <div class="caption">Grad-CAM</div>
-      </div>
+<script>
+let DATA = [];
 
-      <!-- Integrated Gradients -->
-      <div class="image-block">
-        <div class="overlay-container">
-          <img src="ISIC_0028999_resnet_raw.png" alt="Raw Image">
-          <img class="overlay" id="ig" alt="Integrated Gradients">
-        </div>
-        <div class="caption">Integrated Gradients</div>
-      </div>
+fetch('./web/data.json')
+  .then(res => res.json())
+  .then(json => {
+    DATA = json;
 
-      <!-- LIME -->
-      <div class="image-block">
-        <div class="overlay-container">
-          <img src="ISIC_0028999_resnet_raw.png" alt="Raw Image">
-          <img class="overlay" id="lime" alt="LIME">
-        </div>
-        <div class="caption">LIME</div>
-      </div>
-    </div>
-
-    <div class="description-box">
-      <p>
-        REMEMBER TO GET PREDICTIONS TOO blablbla kopiert fra rapport
-      </p>
-    </div>
-  </div>
-
-  <script>
-    const slider = document.getElementById("opacitySlider");
-    const opacityValue = document.getElementById("opacityValue");
-    const modelToggle = document.getElementById("modelToggle");
-    const overlayToggle = document.getElementById("overlayToggle");
-
-    const gradcamImg = document.getElementById("gradcam");
-    const igImg = document.getElementById("ig");
-    const limeImg = document.getElementById("lime");
-
-    const overlays = [gradcamImg, igImg, limeImg];
-    const baseName = "ISIC_0028999";
-
-    function getModel() {
-      return modelToggle.checked ? "effnet" : "resnet";
-    }
-
-    function updateImageSources() {
-      const model = getModel();
-      gradcamImg.src = `${baseName}_${model}_gradcam.png`;
-      igImg.src = `${baseName}_${model}_ig.png`;
-      limeImg.src = `${baseName}_${model}_lime.png`;
-    }
-
-    slider.addEventListener("input", () => {
-      const opacity = slider.value / 100;
-      opacityValue.textContent = slider.value + "%";
-      overlays.forEach(img => img.style.opacity = opacity);
+    // Populate dropdown
+    DATA.forEach(d => {
+      const o = document.createElement('option');
+      o.value = o.textContent = d.image_id;
+      imageSelect.appendChild(o);
     });
 
-    overlayToggle.addEventListener("change", () => {
-      const displayValue = overlayToggle.checked ? "block" : "none";
-      overlays.forEach(img => img.style.display = displayValue);
-    });
+    imageSelect.value = DATA[0]?.image_id || '';
+    updateImages(); updateOpacity(); updateOverlayVis();
+  })
+  .catch(err => {
+    console.error('Failed to load data.json:', err);
+    desc.textContent = 'Error loading image data.';
+  });
 
-    modelToggle.addEventListener("change", updateImageSources);
 
-    // Initialize image sources
-    updateImageSources();
-  </script>
+const imageSelect = document.getElementById('imageSelect');
+const modelToggle  = document.getElementById('modelToggle');
+const overlayToggle= document.getElementById('overlayToggle');
+const opacitySlider= document.getElementById('opacitySlider');
+const opacityValue = document.getElementById('opacityValue');
+const desc         = document.getElementById('desc');
+
+const raw       = document.getElementById('rawImage');
+const gcBase    = document.getElementById('gcBase');
+const igBase    = document.getElementById('igBase');
+const limeBase  = document.getElementById('limeBase');
+const gradcam   = document.getElementById('gradcam');
+const ig        = document.getElementById('ig');
+const lime      = document.getElementById('lime');
+const overlays  = [gradcam, ig, lime];
+
+DATA.forEach(d=>{
+  const o=document.createElement('option');
+  o.value=o.textContent=d.image_id;
+  imageSelect.appendChild(o);
+});
+imageSelect.value='ISIC_0028999';
+
+const current = ()=>DATA.find(d=>d.image_id===imageSelect.value);
+const model   = ()=>modelToggle.checked?'effnet':'resnet';
+
+function updateImages(){
+  const d=current(), m=model();
+  raw.src = 'images/' + d.images.raw;
+
+  gcBase.src = igBase.src = limeBase.src = 'images/' + d.images.raw;
+  gradcam.src = 'images/' + d.images[`${m}_gradcam`];
+  ig.src      = 'images/' + d.images[`${m}_ig`];
+  lime.src    = 'images/' + d.images[`${m}_lime`];
+
+  document.getElementById('predictionSummary').textContent =
+    `True: ${d.true_label}   •   ResNet: ${d.resnet_pred} (${d.resnet_conf.toFixed(2)})   •   EfficientNet: ${d.effnet_pred} (${d.effnet_conf.toFixed(2)})`;
+
+  desc.textContent = d.text_box || '';
+}
+
+function updateOpacity(){
+  const op = +opacitySlider.value/100;
+  opacityValue.textContent = opacitySlider.value + '%';
+  overlays.forEach(img => img.style.opacity = op);
+}
+
+function updateOverlayVis(){
+  overlays.forEach(img => img.style.display = overlayToggle.checked ? 'block' : 'none');
+}
+
+imageSelect .addEventListener('change', updateImages);
+modelToggle .addEventListener('change', updateImages);
+opacitySlider.addEventListener('input', updateOpacity);
+overlayToggle.addEventListener('change', updateOverlayVis);
+
+updateImages(); updateOpacity(); updateOverlayVis();
+</script>
 </body>
 </html>

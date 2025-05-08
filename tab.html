@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tabular</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 2em;
+    }
+
+#app-container {
+  max-width: 700px;
+  width: 100%;
+}
+
+
+    .controls {
+      max-width: 600px;
+      margin-bottom: 20px;
+    }
+
+    .slider-control {
+      position: relative;
+      margin-top: 10px;
+      padding-bottom: 20px;
+    }
+
+    .slider-control input[type="range"] {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .slider-dots {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+    .slider-dots span {
+      height: 6px;
+      width: 6px;
+      background-color: #333;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .match { color: green; }
+    .mismatch { color: red; }
+
+    #viewer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    #selectedImage {
+      max-width: 300px;
+      border: 1px solid #ccc;
+    }
+
+    #results {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    #top3 { padding-left: 1.2em; }
+
+    #image-select-container {
+      margin-bottom: 10px;
+    }
+
+    #image-select-container select {
+      max-width: 150px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app-container">
+    <h1>Tabular counter-factual <a href="index2.html">[switch to CNN]</a></h1>
+
+    <!-- TOP CONTROLS -->
+    <div class="controls">
+      <div class="slider-control">
+        <label for="age">Select Age: <span id="ageValue"></span></label>
+        <input type="range" id="age" step="1">
+        <div class="slider-dots" id="ageDots"></div>
+      </div>
+    </div>
+
+    <!-- MAIN VIEWER -->
+    <div id="viewer">
+      <div>
+        <div id="image-select-container">
+          <label for="image">Select Image:</label>
+          <select id="image"></select>
+        </div>
+        <img id="selectedImage" src="" alt="Selected prediction image">
+      </div>
+
+      <div id="results">
+        <p>
+          <label><input type="checkbox" id="toggleSex"> Use Opposite Sex</label>
+        </p>
+        <p><strong>True Class:</strong> <span id="trueClass"></span></p>
+        <p><strong>True Sex:</strong> <span id="trueSex"></span></p>
+        <p><strong>Predicted Class:</strong> <span id="predictedClass"></span></p>
+        <p><strong>Predicted Probability:</strong> <span id="predictedProb"></span>%</p>
+        <ul id="top3"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+ let data = {};
+
+fetch('predictions_xgboost.json')
+  .then(res => res.json())
+  .then(json => {
+    data = json;
+    init();
+  })
+  .catch(err => {
+    console.error('Error loading data.json:', err);
+    document.getElementById("app-container").innerHTML = "<p>Failed to load data.</p>";
+  });
+
+
+    const $ = id => document.getElementById(id);
+    const DOM = {
+      imageSelect: $("image"),
+      ageSlider:   $("age"),
+      ageValue:    $("ageValue"),
+      ageDots:     $("ageDots"),
+      toggleSex:   $("toggleSex"),
+      trueClass:   $("trueClass"),
+      trueSex:     $("trueSex"),
+      predictedClass: $("predictedClass"),
+      predictedProb:  $("predictedProb"),
+      top3:           $("top3"),
+      selectedImage:  $("selectedImage")
+    };
+
+    let currentAges = [];
+
+    function populateImageDropdown() {
+      Object.keys(data).forEach(id => {
+        const opt = document.createElement("option");
+        opt.value = opt.textContent = id;
+        DOM.imageSelect.appendChild(opt);
+      });
+    }
+
+    function populateAgeSlider() {
+      const imgKey = DOM.imageSelect.value;
+      currentAges = Object.keys(data[imgKey])
+        .filter(k => !isNaN(parseFloat(k)))
+        .sort((a, b) => parseFloat(a) - parseFloat(b));
+
+      DOM.ageSlider.min = 0;
+      DOM.ageSlider.max = currentAges.length - 1;
+      DOM.ageDots.innerHTML = "";
+      currentAges.forEach(() => {
+        DOM.ageDots.appendChild(document.createElement("span"));
+      });
+
+      let defaultIndex = currentAges.findIndex(a => a.includes("."));
+      if (defaultIndex < 0) defaultIndex = 0;
+      DOM.ageSlider.value = defaultIndex;
+
+      updateResults();
+    }
+
+    function updateImageDisplay() {
+      const id = DOM.imageSelect.value;
+      DOM.selectedImage.src = `./images/${id}.png`;
+    }
+
+    function updateResults() {
+      if (!currentAges.length) return;
+
+      const idx = parseInt(DOM.ageSlider.value, 10);
+      const ageKey = currentAges[idx];
+      const imgKey = DOM.imageSelect.value;
+
+      DOM.ageSlider.value = idx;
+      DOM.ageValue.textContent = ageKey;
+
+      const pred = DOM.toggleSex.checked
+        ? data[imgKey][ageKey]["opposite sex"]
+        : data[imgKey][ageKey];
+
+      DOM.trueClass.textContent = data[imgKey]["true class"];
+      DOM.trueSex.textContent  = data[imgKey]["true sex"];
+
+      DOM.predictedClass.textContent = pred["predicted class"];
+      DOM.predictedClass.className  = (pred["predicted class"] === data[imgKey]["true class"])
+        ? "match" : "mismatch";
+
+      DOM.predictedProb.textContent = pred["predicted prob"].toFixed(2);
+
+      DOM.top3.innerHTML = "";
+      pred["top 3 predictions"].forEach((p,i) => {
+        const li = document.createElement("li");
+        li.textContent = `${i+1}. ${p}`;
+        DOM.top3.appendChild(li);
+      });
+    }
+
+    function init() {
+      populateImageDropdown();
+      DOM.imageSelect.value = Object.keys(data)[0];
+      populateAgeSlider();
+      updateImageDisplay();
+
+      DOM.imageSelect.addEventListener("change", () => {
+        populateAgeSlider();
+        updateImageDisplay();
+      });
+      DOM.ageSlider.addEventListener("input", updateResults);
+      DOM.toggleSex.addEventListener("change", updateResults);
+    }
+
+    init();
+  </script>
+</body>
+</html>
